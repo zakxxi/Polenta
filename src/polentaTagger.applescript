@@ -58,10 +58,42 @@ Set obligatory tags
 Set optional tags
 *)
 	set polRetouch to text returned of (display dialog "Annotation retouche " default answer "" buttons {polCancelButtonName, polOkButtonName} default button 2 cancel button 1 with title polWindowName with icon note)
-	set polKit to (choose from list {"KIT 1", "KIT 2", "KIT 3"} with title polWindowName with prompt "Fait partie d'un KIT" OK button name polOkButtonName cancel button name polCancelButtonName with empty selection allowed)
+	set polKit to (choose from list {"KIT-1", "KIT-2", "KIT-3"} with title polWindowName with prompt "Fait partie d'un KIT" OK button name polOkButtonName cancel button name polCancelButtonName with empty selection allowed)
 	
 	(*
-Set  confirm dialog message
+Generate tags and filename
+*)
+	set polImageNewName to polCodebar & " _" & polView -- generate base new name of image
+	
+	set polSessionTag to "SE_" & polSessionPrefs
+	set polBuyerTag to "AC_" & polBuyerName
+	set polPhotographerTag to "PH_" & polPhotographerPrefs
+	set polBarcodeTag to "CO_" & polCodebar
+	set polViewTag to "VU_" & polView
+	
+	if ((polClippingFolder as string) = "PATCH VERSO") then
+		set polClippingTag to "DE_" & polClippingFolder
+		set polImageNewName to polImageNewName & "-" & "PATCH" -- adding Kit to new name of image
+	else
+		set polClippingTag to "DE_" & polClippingFolder
+	end if
+	
+	if polKit ­ {} then
+		set polKitTag to "KI_" & polKit
+		set polImageNewName to polImageNewName & "-" & polKit -- adding Kit to new name of image
+	else
+		set polKitTag to ""
+	end if
+	
+	if polRetouch ­ "" then
+		set polRetouchTag to "RE_" & polRetouch
+		set polImageNewName to polImageNewName & "[" & polRetouch & "]" -- adding [Retouch] to new name of image
+	else
+		set polRetouchTag to ""
+	end if
+	
+	(*
+Set  and display confirm dialog message
 *)
 	set polRecapMessage to "
 Session : " & polSessionPrefs & "
@@ -76,32 +108,17 @@ Kit : " & polKit
 	display dialog polRecapMessage buttons {"Annuler", "DEVELOPPER"} default button 2 cancel button 1 with title polWindowName with icon stop
 	
 	(*
-Generate tags
-*)
-	set polSessionTag to "SE_" & polSessionPrefs
-	set polBuyerTag to "AC_" & polBuyerName
-	set polPhotographerTag to "PH_" & polPhotographerPrefs
-	set polBarcodeTag to "CO_" & polCodebar
-	set polViewTag to "VU_" & polView
-	set polClippingTag to "DE_" & polClippingFolder
-	set polRetouchTag to "RE_" & polRetouch
-	set polKitTag to "KI_" & polKit
-	
-	(*
 Rename the file
 *)
-	set polImageNewName to polCodebar & " _" & polView & " _" & polKit & "[" & polRetouch & "]" -- generate new name of image
 	set polImageNewNameWithExtension to polImageNewName & "." & polImageFileExtension -- re-add file extension
-	
 	tell application "Finder" to set the name of polImageFile to polImageNewNameWithExtension -- rename raw image
 	
 	(*
 Tag the file
 *)
 	set polPathToXMP to polCaptureDirectory & polImageNewName & ".xmp"
-	set polTagList to polSessionTag & "," & polBuyerTag & "," & polPhotographerTag & "," & polBarcodeTag & "," & polViewTag & "," & polClippingTag & "," & polRetouchTag & "," & polKitTag -- generate the taglist comma separated
-	
-	do shell script "/usr/local/bin/exiftool -overwrite_original -subject=" & quoted form of polTagList & " " & quoted form of polPathToXMP
+	set polTagList to polSessionTag & "," & polBuyerTag & "," & polPhotographerTag & "," & polBarcodeTag & "," & polViewTag & "," & polClippingTag & "," & "," & polKitTag & polRetouchTag -- generate the taglist comma separated
+	do shell script "/usr/local/bin/exiftool -overwrite_original -subject=" & quoted form of polTagList & " " & quoted form of polPathToXMP -- need to check exiftool location
 	
 	(*
 Remove the old XMP

@@ -1,12 +1,12 @@
 (****************************
-polentaTagger v0.1
+polentaTagger v0.2
 by Adrien Revel 2015
 ****************************)
 
 (*
 Set properties
 *)
-property polWindowName : "polentaTagger v0.1"
+property polWindowName : "polentaTagger v0.2"
 property polOkButtonName : "Continuer"
 property polCancelButtonName : "Annuler"
 
@@ -47,10 +47,36 @@ Set path, name, extensions of image and folders
 	end tell
 	
 	(*
+Enter barcode and check-it
+*)
+	set authorizedCharacters to {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", " "}
+	set polBarcode to ""
+	set polBadBarcode to false
+	
+	repeat while (length of polBarcode) ­ 10 or (polBadBarcode is true) -- check if barcode length
+		set polBarcode to text returned of (display dialog "Scan du codebarre" default answer "" buttons {polCancelButtonName, polOkButtonName} default button 2 cancel button 1 with title polWindowName with icon note)
+		
+		set testedCharacters to characters of polBarcode as text -- test for bads characters
+		
+		repeat with i from 1 to (length of testedCharacters)
+			set theTestedCharacter to character i of testedCharacters
+			if theTestedCharacter is not in authorizedCharacters then
+				set polBadBarcode to true
+			else
+				set polBadBarcode to false
+			end if
+		end repeat
+		
+		if polBadBarcode is false then set polBarcode to (do shell script "echo \"" & polBarcode & "\" | sed 's/ /_/g'") -- replace space with underscore
+		
+		if (((length of polBarcode) ­ 10) or polBadBarcode is true) then
+			display dialog "Codebarre non valide " buttons {"Re-saisir"} default button 1 with title "Alerte" with icon caution
+		end if
+	end repeat
+	
+	(*
 Set obligatory tags
 *)
-	set polBarcode to text returned of (display dialog "Scan du codebarre" default answer "" buttons {polCancelButtonName, polOkButtonName} default button 2 cancel button 1 with title polWindowName with icon note)
-	
 	set polView to (choose from list polViewsPrefs with title polWindowName with prompt "Point de vue" OK button name polOkButtonName cancel button name polCancelButtonName)
 	set polClippingType to (choose from list polClippingTypesPrefs with title polWindowName with prompt "Type de detourage" OK button name polOkButtonName cancel button name polCancelButtonName)
 	

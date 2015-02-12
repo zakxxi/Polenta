@@ -25,7 +25,7 @@ Read preferences files
 	set polPhotographerPrefs to read polPrefsDirectory & "polPhotographer.txt" as string
 	set polBuyersPrefs to read polPrefsDirectory & "polBuyers.txt" using delimiter linefeed -- create a list, after linebreak
 	set polViewsPrefs to read polPrefsDirectory & "polViews.txt" using delimiter linefeed -- create a list, after linebreak
-	set polClippingFoldersPrefs to read polPrefsDirectory & "polClippingFolders.txt" using delimiter linefeed -- create a list, after linebreak
+	set polClippingTypesPrefs to read polPrefsDirectory & "polClippingTypes.txt" using delimiter linefeed -- create a list, after linebreak
 	
 	(*
 Set selected image in C1
@@ -49,10 +49,10 @@ Set path, name, extensions of image and folders
 	(*
 Set obligatory tags
 *)
-	set polCodebar to text returned of (display dialog "Scan du codebarre" default answer "" buttons {polCancelButtonName, polOkButtonName} default button 2 cancel button 1 with title polWindowName with icon note)
+	set polBarcode to text returned of (display dialog "Scan du codebarre" default answer "" buttons {polCancelButtonName, polOkButtonName} default button 2 cancel button 1 with title polWindowName with icon note)
 	
 	set polView to (choose from list polViewsPrefs with title polWindowName with prompt "Point de vue" OK button name polOkButtonName cancel button name polCancelButtonName)
-	set polClippingFolder to (choose from list polClippingFoldersPrefs with title polWindowName with prompt "Dossier de détourage" OK button name polOkButtonName cancel button name polCancelButtonName)
+	set polClippingType to (choose from list polClippingTypesPrefs with title polWindowName with prompt "Type de detourage" OK button name polOkButtonName cancel button name polCancelButtonName)
 	
 	(*
 Set optional tags
@@ -63,19 +63,19 @@ Set optional tags
 	(*
 Generate tags and filename
 *)
-	set polImageNewName to polCodebar & " _" & polView -- generate base new name of image
+	set polImageNewName to polBarcode & " _" & polView -- generate base new name of image
 	
 	set polSessionTag to "SE_" & polSessionPrefs
 	set polBuyerTag to "AC_" & polBuyerName
 	set polPhotographerTag to "PH_" & polPhotographerPrefs
-	set polBarcodeTag to "CO_" & polCodebar
+	set polBarcodeTag to "CO_" & polBarcode
 	set polViewTag to "VU_" & polView
 	
-	if ((polClippingFolder as string) = "PATCH VERSO") then
-		set polClippingTag to "DE_" & polClippingFolder
+	if ((polClippingType as string) = "PATCH VERSO") then
+		set polClippingTag to "DE_" & polClippingType
 		set polImageNewName to polImageNewName & "-" & "PATCH" -- adding Kit to new name of image
 	else
-		set polClippingTag to "DE_" & polClippingFolder
+		set polClippingTag to "DE_" & polClippingType
 	end if
 	
 	if polKit ≠ {} then
@@ -99,9 +99,9 @@ Set  and display confirm dialog message
 Session : " & polSessionPrefs & "
 Acheteur : " & polBuyerName & "
 Photographe : " & polPhotographerPrefs & "
-Codebarre : " & polCodebar & "
+Codebarre : " & polBarcode & "
 Point de vue : " & polView & "
-Détourage : " & polClippingFolder & "
+Detourage : " & polClippingType & "
 Retouche : " & polRetouch & "
 Kit : " & polKit
 	

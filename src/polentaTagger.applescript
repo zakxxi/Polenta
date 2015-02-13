@@ -97,7 +97,7 @@ Generate tags and filename
 	set polBarcodeTag to "CO_" & polBarcode
 	set polViewTag to "VU_" & polView
 	
-	if ((polClippingType as string) = "PATCH VERSO") then
+	if ((polClippingType as string) = "PATCH ENVERS") then
 		set polClippingTag to "DE_" & polClippingType
 		set polImageNewName to polImageNewName & "-" & "PATCH" -- adding Kit to new name of image
 	else
@@ -144,7 +144,7 @@ Tag the file
 *)
 	set polPathToXMP to polCaptureDirectory & polImageNewName & ".xmp"
 	set polTagList to polSessionTag & "," & polBuyerTag & "," & polPhotographerTag & "," & polBarcodeTag & "," & polViewTag & "," & polClippingTag & "," & "," & polKitTag & polRetouchTag -- generate the taglist comma separated
-	do shell script "/usr/local/bin/exiftool -overwrite_original -subject=" & quoted form of polTagList & " " & quoted form of polPathToXMP -- need to check exiftool location
+	do shell script "/usr/bin/exiftool -overwrite_original -subject=" & quoted form of polTagList & " " & quoted form of polPathToXMP -- need to check exiftool location
 	
 	(*
 Remove the old XMP

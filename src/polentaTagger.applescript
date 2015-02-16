@@ -53,7 +53,7 @@ Enter barcode and check-it
 	set polBarcode to ""
 	set polBadBarcode to false
 	
-	repeat while (length of polBarcode) ­ 10 or (polBadBarcode is true) -- check if barcode length
+	repeat while (length of polBarcode) â‰  10 or (polBadBarcode is true) -- check if barcode length
 		set polBarcode to text returned of (display dialog "Scan du codebarre" default answer "" buttons {polCancelButtonName, polOkButtonName} default button 2 cancel button 1 with title polWindowName with icon note)
 		
 		set testedCharacters to characters of polBarcode as text -- test for bads characters
@@ -69,7 +69,7 @@ Enter barcode and check-it
 		
 		if polBadBarcode is false then set polBarcode to (do shell script "echo \"" & polBarcode & "\" | sed 's/ /_/g'") -- replace space with underscore
 		
-		if (((length of polBarcode) ­ 10) or polBadBarcode is true) then
+		if (((length of polBarcode) â‰  10) or polBadBarcode is true) then
 			display dialog "Codebarre non valide " buttons {"Re-saisir"} default button 1 with title "Alerte" with icon caution
 		end if
 	end repeat
@@ -89,7 +89,7 @@ Set optional tags
 	(*
 Generate tags and filename
 *)
-	set polImageNewName to polBarcode & " _" & polView -- generate base new name of image
+	set polImageNewName to polBarcode & "_" & polView -- generate base new name of image
 	
 	set polSessionTag to "SE_" & polSessionPrefs
 	set polBuyerTag to "AC_" & polBuyerName
@@ -104,14 +104,14 @@ Generate tags and filename
 		set polClippingTag to "DE_" & polClippingType
 	end if
 	
-	if polKit ­ {} then
+	if polKit â‰  {} then
 		set polKitTag to "KI_" & polKit
 		set polImageNewName to polImageNewName & "-" & polKit -- adding Kit to new name of image
 	else
 		set polKitTag to ""
 	end if
 	
-	if polRetouch ­ "" then
+	if polRetouch â‰  "" then
 		set polRetouchTag to "RE_" & polRetouch
 		set polImageNewName to polImageNewName & "[" & polRetouch & "]" -- adding [Retouch] to new name of image
 	else
@@ -145,11 +145,27 @@ Tag the file
 	set polPathToXMP to polCaptureDirectory & polImageNewName & ".xmp"
 	set polTagList to polSessionTag & "," & polBuyerTag & "," & polPhotographerTag & "," & polBarcodeTag & "," & polViewTag & "," & polClippingTag & "," & "," & polKitTag & polRetouchTag -- generate the taglist comma separated
 	do shell script "/usr/bin/exiftool -overwrite_original -subject=" & quoted form of polTagList & " " & quoted form of polPathToXMP -- need to check exiftool location
+
+
+(*
+Keep .cos settings
+*)
+
+	set captureOneSettingsFolder to polCaptureDirectory & ""
+	
+	
+-- C1 v 7
+
+-- C1 v 8
+
 	
 	(*
 Remove the old XMP
 *)
 	tell application "Finder" to delete ((POSIX file (polCaptureDirectory & polImageOriginalName & ".xmp")) as alias)
+
+
+
 	
 	(*
 Process the image

@@ -1,12 +1,12 @@
 (****************************
-polentaTagger v0.7
+polentaTagger v0.8
 by Adrien Revel 2015
 ****************************)
 
 (*
 Set properties
 *)
-property polWindowName : "polentaTagger v0.7"
+property polWindowName : "polentaTagger v0.8"
 property polOkButtonName : "Continuer"
 property polCancelButtonName : "Annuler"
 
@@ -49,7 +49,7 @@ Set path, name, extensions of image and folders
 	(*
 Enter barcode and check-it
 *)
-	set authorizedCharacters to {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", " "}
+	set authorizedCharacters to {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", " ", "_"}
 	set polBarcode to ""
 	set polBadBarcode to false
 	
@@ -92,6 +92,8 @@ Set the date tag
 	if (polMonth < 10) then set polMonth to ("0" & polMonth)
 	if (polDay < 10) then set polDay to ("0" & polMonth)
 	
+	set polDayDate to (polYear & polMonth & polDay) as string
+	
 	(*
 Set optional tags
 *)
@@ -104,7 +106,7 @@ Generate tags and filename
 	set polImageNewName to polBarcode & "_" & polView -- generate base new name of image
 	set polSessionTag to "SE_" & polSessionPrefs
 	-- Set the folder name
-	set polDateTag to "JO_" & (polYear & polMonth & polDay) as string
+	set polDateTag to "JO_" & polDayDate
 	set polBuyerTag to "AC_" & polBuyerName
 	set polPhotographerTag to "PH_" & polPhotographerPrefs
 	set polBarcodeTag to "CO_" & polBarcode
@@ -136,7 +138,7 @@ Set  and display confirm dialog message
 *)
 	set polRecapMessage to "
 Session : " & polSessionPrefs & "
-Jour : " & polDateTag & "
+Jour : " & polDayDate & "
 Acheteur : " & polBuyerName & "
 Photographe : " & polPhotographerPrefs & "
 Codebarre : " & polBarcode & "

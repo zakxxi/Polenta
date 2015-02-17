@@ -1,12 +1,12 @@
 (****************************
-polentaTagger v0.6
+polentaTagger v0.7
 by Adrien Revel 2015
 ****************************)
 
 (*
 Set properties
 *)
-property polWindowName : "polentaTagger v0.6"
+property polWindowName : "polentaTagger v0.7"
 property polOkButtonName : "Continuer"
 property polCancelButtonName : "Annuler"
 
@@ -80,7 +80,6 @@ Set obligatory tags
 	set polView to (choose from list polViewsPrefs with title polWindowName with prompt "Point de vue" OK button name polOkButtonName cancel button name polCancelButtonName)
 	set polClippingType to (choose from list polClippingTypesPrefs with title polWindowName with prompt "Type de detourage" OK button name polOkButtonName cancel button name polCancelButtonName)
 	
-	
 	(*
 Set the date tag
 *)
@@ -92,8 +91,6 @@ Set the date tag
 	-- Add 0 berfore day or month < 10
 	if (polMonth < 10) then set polMonth to ("0" & polMonth)
 	if (polDay < 10) then set polDay to ("0" & polMonth)
-	
-	
 	
 	(*
 Set optional tags
@@ -107,7 +104,7 @@ Generate tags and filename
 	set polImageNewName to polBarcode & "_" & polView -- generate base new name of image
 	set polSessionTag to "SE_" & polSessionPrefs
 	-- Set the folder name
-	set polDateTag to (polYear & polMonth & polDay) as string
+	set polDateTag to "JO_" & (polYear & polMonth & polDay) as string
 	set polBuyerTag to "AC_" & polBuyerName
 	set polPhotographerTag to "PH_" & polPhotographerPrefs
 	set polBarcodeTag to "CO_" & polBarcode
@@ -139,6 +136,7 @@ Set  and display confirm dialog message
 *)
 	set polRecapMessage to "
 Session : " & polSessionPrefs & "
+Jour : " & polDateTag & "
 Acheteur : " & polBuyerName & "
 Photographe : " & polPhotographerPrefs & "
 Codebarre : " & polBarcode & "

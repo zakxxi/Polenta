@@ -1,12 +1,12 @@
 (****************************
-polentaTagger v0.5
+polentaTagger v0.6
 by Adrien Revel 2015
 ****************************)
 
 (*
 Set properties
 *)
-property polWindowName : "polentaTagger v0.5"
+property polWindowName : "polentaTagger v0.6"
 property polOkButtonName : "Continuer"
 property polCancelButtonName : "Annuler"
 
@@ -80,6 +80,21 @@ Set obligatory tags
 	set polView to (choose from list polViewsPrefs with title polWindowName with prompt "Point de vue" OK button name polOkButtonName cancel button name polCancelButtonName)
 	set polClippingType to (choose from list polClippingTypesPrefs with title polWindowName with prompt "Type de detourage" OK button name polOkButtonName cancel button name polCancelButtonName)
 	
+	
+	(*
+Set the date tag
+*)
+	-- Check the current date
+	set polYear to year of (current date)
+	set polMonth to month of (current date) as integer
+	set polDay to day of (current date)
+	
+	-- Add 0 berfore day or month < 10
+	if (polMonth < 10) then set polMonth to ("0" & polMonth)
+	if (polDay < 10) then set polDay to ("0" & polMonth)
+	
+	
+	
 	(*
 Set optional tags
 *)
@@ -90,8 +105,9 @@ Set optional tags
 Generate tags and filename
 *)
 	set polImageNewName to polBarcode & "_" & polView -- generate base new name of image
-	
 	set polSessionTag to "SE_" & polSessionPrefs
+	-- Set the folder name
+	set polDateTag to (polYear & polMonth & polDay) as string
 	set polBuyerTag to "AC_" & polBuyerName
 	set polPhotographerTag to "PH_" & polPhotographerPrefs
 	set polBarcodeTag to "CO_" & polBarcode
@@ -143,7 +159,7 @@ Rename the file
 Tag the file
 *)
 	set polPathToXMP to polCaptureDirectory & polImageNewName & ".xmp"
-	set polTagList to polSessionTag & "," & polBuyerTag & "," & polPhotographerTag & "," & polBarcodeTag & "," & polViewTag & "," & polClippingTag & "," & "," & "," & polKitTag & polRetouchTag -- generate the taglist comma separated
+	set polTagList to polSessionTag & "," & polDateTag & "," & polBuyerTag & "," & polPhotographerTag & "," & polBarcodeTag & "," & polViewTag & "," & polClippingTag & "," & polKitTag & "," & polRetouchTag -- generate the taglist comma separated
 	do shell script "/usr/bin/exiftool -overwrite_original -subject=" & quoted form of polTagList & " " & quoted form of polPathToXMP -- need to check exiftool location
 	
 	
@@ -151,9 +167,6 @@ Tag the file
 Remove the old XMP
 *)
 	tell application "Finder" to delete ((POSIX file (polCaptureDirectory & polImageOriginalName & ".xmp")) as alias)
-	
-	
-	
 	
 	(*
 Process the image

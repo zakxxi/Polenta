@@ -1,12 +1,12 @@
 (****************************
-polentaTagger v0.3
+polentaTagger v0.5
 by Adrien Revel 2015
 ****************************)
 
 (*
 Set properties
 *)
-property polWindowName : "polentaTagger v0.3"
+property polWindowName : "polentaTagger v0.5"
 property polOkButtonName : "Continuer"
 property polCancelButtonName : "Annuler"
 
@@ -84,7 +84,7 @@ Set obligatory tags
 Set optional tags
 *)
 	set polRetouch to text returned of (display dialog "Annotation retouche " default answer "" buttons {polCancelButtonName, polOkButtonName} default button 2 cancel button 1 with title polWindowName with icon note)
-	set polKit to (choose from list {"KIT-1", "KIT-2", "KIT-3"} with title polWindowName with prompt "Fait partie d'un KIT" OK button name polOkButtonName cancel button name polCancelButtonName with empty selection allowed)
+	set polKit to (choose from list {"KIT-1", "KIT-2", "KIT-3", "KIT-4", "KIT-5", "KIT-6", "KIT-7", "KIT-8"} with title polWindowName with prompt "Fait partie d'un KIT" OK button name polOkButtonName cancel button name polCancelButtonName with empty selection allowed)
 	
 	(*
 Generate tags and filename
@@ -143,7 +143,7 @@ Rename the file
 Tag the file
 *)
 	set polPathToXMP to polCaptureDirectory & polImageNewName & ".xmp"
-	set polTagList to polSessionTag & "," & polBuyerTag & "," & polPhotographerTag & "," & polBarcodeTag & "," & polViewTag & "," & polClippingTag & "," & "," & polKitTag & polRetouchTag -- generate the taglist comma separated
+	set polTagList to polSessionTag & "," & polBuyerTag & "," & polPhotographerTag & "," & polBarcodeTag & "," & polViewTag & "," & polClippingTag & "," & "," & "," & polKitTag & polRetouchTag -- generate the taglist comma separated
 	do shell script "/usr/bin/exiftool -overwrite_original -subject=" & quoted form of polTagList & " " & quoted form of polPathToXMP -- need to check exiftool location
 	
 	

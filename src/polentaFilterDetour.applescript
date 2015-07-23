@@ -29,13 +29,13 @@ set destFolderX to POSIX path of destFolder
 set destFolderXX to quoted form of destFolderX
 
 -- Create path of work folders
-set batchFolderX to destFolderX & "_BATCH"
+set batchFolderX to destFolderX & "_BATCH/"
 set batchFolderXX to quoted form of batchFolderX
 
-set notagFolderX to destFolderX & "_NOTAG"
+set notagFolderX to destFolderX & "_NOTAG/"
 set notagFolderXX to quoted form of notagFolderX
 
-set outputFolderX to destFolderX & "_OUTPUT"
+set outputFolderX to destFolderX & "_OUTPUT/"
 set outputFolderXX to quoted form of outputFolderX
 
 -- Create work folder
@@ -129,7 +129,12 @@ repeat with i in fileList
 			set endFolder to ((destFolder as string) & j) as alias
 			--	display dialog ("WIN" & "     " & POSIXpathToImage & "     " & endFolder)
 			-- do shell script "mv " & POSIXpathToImage & " " & endFolder
-			tell application "Finder" to move pathToImage to endFolder
+			-- tell application "Finder" to move pathToImage to endFolder
+			
+			set pathToImageX to quoted form of POSIX path of pathToImage
+			set endFolderX to quoted form of POSIX path of endFolder
+			
+			do shell script "mv " & pathToImageX & " " & endFolderX
 			
 		end if
 	end repeat
@@ -157,7 +162,29 @@ end tell
 
 set nb_jpg_output to do shell script ("find " & outputFolderXX & " -name '*.jpg' -path '" & findPath & "' | wc -l")
 
+(*
+Polenta filter
+*)
 
+set cmd_listKeywords to "exiftool " & outputFolderX & "* -keywords -f > " & outputFolderX & "keywords-list.txt"
+set cmd_convertKeywordsOdd to "awk 'NR % 2 == 0' " & outputFolderX & "keywords-list.txt > " & outputFolderX & "odd.csv"
+set cmd_convertKeywordsEven to "awk 'NR % 2 == 1' " & outputFolderX & "keywords-list.txt > " & outputFolderX & "even.csv"
+set cmd_pasteKeywords to "paste -d ',' " & outputFolderX & "even.csv " & outputFolderX & "odd.csv > " & outputFolderX & "total.csv"
+set cmd_cleanKeywords1 to "sed 's/======== //g' " & outputFolderX & "total.csv > " & outputFolderX & "total2.csv"
+set cmd_cleanKeywords2 to "sed 's/Keywords                        ://g'  " & outputFolderX & "total2.csv >  " & outputFolderX & "total3.csv"
+set cmd_cleanKeywords3 to "sed 's/CO_//g'  " & outputFolderX & "total3.csv >  " & outputFolderX & "total4.csv"
+set cmd_cleanKeywords4 to "sed 's/, /;/g' " & outputFolderX & "total4.csv > " & outputFolderX & "_OUTPUT.csv "
+set cmd_cleanupFiles to "rm " & outputFolderX & "keywords-list.txt " & outputFolderX & "odd.csv " & outputFolderX & "even.csv " & outputFolderX & "total.csv " & outputFolderX & "total2.csv " & outputFolderX & "total3.csv " & outputFolderX & "total4.csv"
+
+do shell script cmd_listKeywords
+do shell script cmd_convertKeywordsOdd
+do shell script cmd_convertKeywordsEven
+do shell script cmd_pasteKeywords
+do shell script cmd_cleanKeywords1
+do shell script cmd_cleanKeywords2
+do shell script cmd_cleanKeywords3
+do shell script cmd_cleanKeywords4
+do shell script cmd_cleanupFiles
 
 (*
 Display message

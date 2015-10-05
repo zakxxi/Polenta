@@ -21,7 +21,7 @@ Set defaults folders
 	(*
 Read preferences files
 *)
-	set polSessionPrefs to read polPrefsDirectory & "polSession.txt" as string
+	--set polSessionPrefs to read polPrefsDirectory & "polSession.txt" as string
 	set polPhotographerPrefs to read polPrefsDirectory & "polPhotographer.txt" as string
 	set polBuyersPrefs to read polPrefsDirectory & "polBuyers.txt" using delimiter linefeed -- create a list, after linebreak
 	set polViewsPrefs to read polPrefsDirectory & "polViews.txt" using delimiter linefeed -- create a list, after linebreak
@@ -81,7 +81,7 @@ Set obligatory tags
 	set polClippingType to (choose from list polClippingTypesPrefs with title polWindowName with prompt "Type de detourage" OK button name polOkButtonName cancel button name polCancelButtonName)
 	
 	(*
-Set the date tag
+Set the session and date tag
 *)
 	-- Check the current date
 	set polYear to year of (current date)
@@ -89,10 +89,12 @@ Set the date tag
 	set polDay to day of (current date)
 	
 	-- Add 0 berfore day or month < 10
-	if (polMonth < 10) then set polMonth to ("0" & polMonth)
-	if (polDay < 10) then set polDay to ("0" & polMonth)
+	if (polMonth < 10) then set polMonth to ("0" & (polMonth as string))
+	if (polDay < 10) then set polDay to ("0" & (polDay) as string)
 	
 	set polDayDate to (polYear & polMonth & polDay) as string
+	
+	set polSessionPrefs to (polYear & polMonth) as string
 	
 	(*
 Set optional tags

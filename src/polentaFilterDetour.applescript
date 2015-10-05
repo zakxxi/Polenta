@@ -166,6 +166,22 @@ end tell
 set nb_jpg_output to do shell script ("find " & outputFolderXX & " -name '*.jpg' -path '" & findPath & "' | wc -l")
 
 (*
+CREATE DATE STRING
+*)
+
+set {year:y, month:m, day:d, hours:h, minutes:mm} to (current date)
+set m to m as integer
+
+if m < 10 then set m to "0" & (m as string)
+if d < 10 then set d to "0" & (d as string)
+if h < 10 then set h to "0" & (d as string)
+if mm < 10 then set mm to "0" & (d as string)
+
+set dateTag to ((((y as string) & m as string) & d as string) & "-" & h as string) & "H" & mm as string
+
+set outputFileName to "POLENTA-UP-" & dateTag & ".csv"
+
+(*
 Polenta filter
 *)
 
@@ -176,7 +192,7 @@ set cmd_pasteKeywords to "paste -d ',' " & outputFolderX & "even.csv " & outputF
 set cmd_cleanKeywords1 to "sed 's/======== //g' " & outputFolderX & "total.csv > " & outputFolderX & "total2.csv"
 set cmd_cleanKeywords2 to "sed 's/Keywords                        ://g'  " & outputFolderX & "total2.csv >  " & outputFolderX & "total3.csv"
 set cmd_cleanKeywords3 to "sed 's/CO_//g'  " & outputFolderX & "total3.csv >  " & outputFolderX & "total4.csv"
-set cmd_cleanKeywords4 to "sed 's/, /;/g' " & outputFolderX & "total4.csv > " & outputFolderX & "_OUTPUT.csv "
+set cmd_cleanKeywords4 to "sed 's/, /;/g' " & outputFolderX & "total4.csv > " & outputFolderX & outputFileName
 set cmd_cleanupFiles to "rm " & outputFolderX & "keywords-list.txt " & outputFolderX & "odd.csv " & outputFolderX & "even.csv " & outputFolderX & "total.csv " & outputFolderX & "total2.csv " & outputFolderX & "total3.csv " & outputFolderX & "total4.csv"
 
 do shell script cmd_listKeywords

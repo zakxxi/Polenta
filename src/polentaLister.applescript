@@ -24,7 +24,7 @@ set dateTag to ((((y as string) & m as string) & d as string) & "-" & h as strin
 set outputFileName to "POLENTA-REPORT-" & dateTag & ".csv"
 
 -- exiftool -keywords -r -f -ext JPG -i 'Trash' /Volumes/Data\ HD/_BRICE\ BIG\ STUFF/141114 
-set cmd_listKeywords to "exiftool -keywords -r -f -ext JPG -i 'Trash' " & baseFolderXX & " > " & destFolderX & "keywords-list.txt"
+set cmd_listKeywords to "/usr/local/bin/exiftool -keywords -r -f -ext JPG -i 'Trash' " & baseFolderXX & " > " & destFolderX & "keywords-list.txt"
 set cmd_convertKeywordsOdd to "awk 'NR % 2 == 0' " & destFolderX & "keywords-list.txt > " & destFolderX & "odd.csv"
 set cmd_convertKeywordsEven to "awk 'NR % 2 == 1' " & destFolderX & "keywords-list.txt > " & destFolderX & "even.csv"
 set cmd_pasteKeywords to "paste -d ',' " & destFolderX & "even.csv " & destFolderX & "odd.csv > " & destFolderX & "total.csv"

@@ -33,8 +33,8 @@ set polMonth to month of (current date) as integer
 set polDay to day of (current date)
 
 -- Add 0 berfore day or month < 10
-if (polMonth < 10) then set polMonth to ("0" & polMonth)
-if (polDay < 10) then set polDay to ("0" & polMonth)
+if (polMonth < 10) then set polMonth to ("0" & (polMonth as string))
+if (polDay < 10) then set polDay to ("0" & (polDay) as string)
 
 -- Set the folder name
 set polDateFolderName to (polYear & polMonth & polDay) as string

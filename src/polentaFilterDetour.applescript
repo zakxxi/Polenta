@@ -32,15 +32,15 @@ set destFolderXX to quoted form of destFolderX
 set batchFolderX to destFolderX & "_BATCH/"
 set batchFolderXX to quoted form of batchFolderX
 
-set notagFolderX to destFolderX & "_NOTAG/"
-set notagFolderXX to quoted form of notagFolderX
+--set notagFolderX to destFolderX & "_NOTAG/"
+--set notagFolderXX to quoted form of notagFolderX
 
 set outputFolderX to destFolderX & "_OUTPUT/"
 set outputFolderXX to quoted form of outputFolderX
 
 -- Create work folder
 -- mkdir '/Users/zak/Desktop/OUT/_BATCH' '/Users/zak/Desktop/OUT/_NOTAG' '/Users/zak/Desktop/OUT/_OUTPUT'
-set cmd_createWorkFolders to "mkdir " & batchFolderXX & " " & notagFolderXX & " " & outputFolderXX
+set cmd_createWorkFolders to "mkdir " & batchFolderXX & " " & outputFolderXX
 
 -- Define the path to look
 --set findPath to "*/Output/*"
@@ -58,13 +58,16 @@ do shell script cmd_findJPGcopy
 
 -- Check for images without tags
 -- mdfind -onlyin . 'kMDItemKeywords != "*"'
-set cmd_isolateNoTag to "mdfind -onlyin " & batchFolderXX & " 'kMDItemKeywords != \"*\"' | while read f; do mv \"$f\" " & notagFolderXX & "; done "
-do shell script cmd_isolateNoTag
+-- delay 10
+
+-- set cmd_isolateNoTag to "mdfind -onlyin " & batchFolderXX & " 'kMDItemKeywords != \"*\"' | while read f; do mv \"$f\" " & notagFolderXX & "; done "
+
+-- do shell script cmd_isolateNoTag
 
 set nb_jpg_batch to do shell script ("find " & batchFolderXX & " -name '*.jpg' -path '" & findPath & "' | wc -l")
-set nb_jpg_notag to do shell script ("find " & notagFolderXX & " -name '*.jpg' -path '" & findPath & "' | wc -l")
+--set nb_jpg_notag to do shell script ("find " & notagFolderXX & " -name '*.jpg' -path '" & findPath & "' | wc -l")
 
-delay 10
+
 
 (*
 DETOUR FOLDERS
@@ -166,7 +169,7 @@ set nb_jpg_output to do shell script ("find " & outputFolderXX & " -name '*.jpg'
 Polenta filter
 *)
 
-set cmd_listKeywords to "exiftool " & outputFolderX & "* -keywords -f > " & outputFolderX & "keywords-list.txt"
+set cmd_listKeywords to "/usr/local/bin/exiftool " & outputFolderX & "* -keywords -f > " & outputFolderX & "keywords-list.txt"
 set cmd_convertKeywordsOdd to "awk 'NR % 2 == 0' " & outputFolderX & "keywords-list.txt > " & outputFolderX & "odd.csv"
 set cmd_convertKeywordsEven to "awk 'NR % 2 == 1' " & outputFolderX & "keywords-list.txt > " & outputFolderX & "even.csv"
 set cmd_pasteKeywords to "paste -d ',' " & outputFolderX & "even.csv " & outputFolderX & "odd.csv > " & outputFolderX & "total.csv"
@@ -193,7 +196,6 @@ display dialog "+++ YOU WIN! +++ PERFECT! +++
 
 Original images : 	" & nb_jpg_original & "
 Batch images : 	" & nb_jpg_batch & "
-Notag images : 	" & nb_jpg_notag & "
 Output images : 	" & nb_jpg_output buttons {"PERFECT!"} default button 1 with title "polentaFilter" with icon caution
 
 (*
@@ -208,7 +210,7 @@ on read_tags(pathToImage)
 	
 	set POSIXpathToImage to POSIX path of pathToImage
 	
-	set tagsList to do shell script "exiftool -subject " & "'" & POSIXpathToImage & "'"
+	set tagsList to do shell script "/usr/local/bin/exiftool -subject " & "'" & POSIXpathToImage & "'"
 	set cleanTags to replace_chars(tagsList, "Subject                         : ", "")
 	set cleanTagsList to split(cleanTags, ", ")
 	
@@ -235,6 +237,3 @@ on split(someText, delimiter)
 	set AppleScript's text item delimiters to {""} --> restore delimiters to default value
 	return someText
 end split
-
-
-

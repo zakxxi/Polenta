@@ -1,5 +1,5 @@
 (****************************
-polentaReader v0.3
+polentaFilterDetour v1.0
 by Adrien Revel 2015
 ****************************)
 
@@ -89,13 +89,6 @@ AS ZONE
 
 set baseFolder to POSIX file (get batchFolderX) as alias
 set destFolder to POSIX file (get outputFolderX) as alias
-
-(*
-Set defaults folders
-*)
-set scriptDirectory to (path to me) -- folder of script
-tell application "Finder" to set polDirectory to POSIX path of (container of (container of scriptDirectory) as alias) -- folder of polenta
-set polPrefsDirectory to polDirectory & "prefs/" -- folder of preferences
 
 (*
 Read preferences files
@@ -208,11 +201,9 @@ do shell script cmd_cleanupFiles
 (*
 Display message
 *)
-display dialog "+++ YOU WIN! +++ PERFECT! +++
+display dialog "+++ YOU WIN! +++ PERFECT! +++" buttons {"OK!"} default button 1 with title "polentaFilter" with icon caution
 
-Original images : 	" & nb_jpg_original & "
-Batch images : 	" & nb_jpg_batch & "
-Output images : 	" & nb_jpg_output buttons {"PERFECT!"} default button 1 with title "polentaFilter" with icon caution
+
 
 (*
 Empty the trash

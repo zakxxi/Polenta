@@ -1,11 +1,12 @@
 (****************************
-polentaSession v0.1
+polentaSession v1.0
 by Adrien Revel 2015
 ****************************)
+
 (*
 Set properties
 *)
-property polWindowName : "polentaSession v0.1"
+property polWindowName : "polentaSession v1.0"
 global polBaseFolder
 global polDateFolder
 global polPhotographerFolder

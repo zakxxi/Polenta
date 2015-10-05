@@ -1,11 +1,11 @@
 (****************************
-polentaInstaller v0.1
+polentaInstaller 1.0
 by Adrien Revel 2015
 ****************************)
 (*
 Set properties
 *)
-property polWindowName : "polentaInstaller v0.1"
+property polWindowName : "polentaInstaller v1.0"
 
 (*
 Set defaults files folders

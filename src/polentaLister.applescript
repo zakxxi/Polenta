@@ -1,3 +1,8 @@
+(****************************
+polentaLister v1.0
+by Adrien Revel 2015
+****************************)
+
 set baseFolder to choose folder with prompt "Select base folder" default location (path to desktop folder) as alias
 set destFolder to choose folder with prompt "Select destination of report file" default location (path to desktop folder) as alias
 

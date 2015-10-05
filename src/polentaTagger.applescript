@@ -1,12 +1,12 @@
 (****************************
-polentaTagger v0.8
+polentaTagger v1.0
 by Adrien Revel 2015
 ****************************)
 
 (*
 Set properties
 *)
-property polWindowName : "polentaTagger v0.8"
+property polWindowName : "polentaTagger v1.0"
 property polOkButtonName : "Continuer"
 property polCancelButtonName : "Annuler"
 

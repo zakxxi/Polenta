@@ -1,5 +1,5 @@
 (****************************
-polentaReader v0.3
+polentaFilterDetour v1.0
 by Adrien Revel 2015
 ****************************)
 

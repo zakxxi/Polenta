@@ -1,5 +1,5 @@
 (****************************
-polentaFilterDetour v1.0
+polentaFilterDetour v1.1-WIP
 by Adrien Revel 2015
 ****************************)
 
@@ -32,15 +32,15 @@ set destFolderXX to quoted form of destFolderX
 set batchFolderX to destFolderX & "_BATCH/"
 set batchFolderXX to quoted form of batchFolderX
 
---set notagFolderX to destFolderX & "_NOTAG/"
---set notagFolderXX to quoted form of notagFolderX
+set errorFolderX to destFolderX & "_ERRORS/"
+set errorFolderXX to quoted form of errorFolderX
 
 set outputFolderX to destFolderX & "_OUTPUT/"
 set outputFolderXX to quoted form of outputFolderX
 
 -- Create work folder
 -- mkdir '/Users/zak/Desktop/OUT/_BATCH' '/Users/zak/Desktop/OUT/_NOTAG' '/Users/zak/Desktop/OUT/_OUTPUT'
-set cmd_createWorkFolders to "mkdir " & batchFolderXX & " " & outputFolderXX
+set cmd_createWorkFolders to "mkdir " & batchFolderXX & " " & outputFolderXX & " " & errorFolderXX
 
 -- Define the path to look
 --set findPath to "*/Output/*"
@@ -116,24 +116,35 @@ repeat with i in fileList
 	-- display dialog (i as text)
 	
 	set pathToImage to i as alias
+	--display dialog pathToImage
+	--set pathToImageX to quoted form of POSIX path of pathToImage
 	
-	set detourTag to read_tags(pathToImage)
-	
-	repeat with j in outputFolderList
+	try
 		
-		if contents of j = detourTag then
-			set endFolder to ((destFolder as string) & j) as alias
-			--	display dialog ("WIN" & "     " & POSIXpathToImage & "     " & endFolder)
-			-- do shell script "mv " & POSIXpathToImage & " " & endFolder
-			-- tell application "Finder" to move pathToImage to endFolder
+		set detourTag to read_tags(pathToImage)
+		
+		repeat with j in outputFolderList
 			
-			set pathToImageX to quoted form of POSIX path of pathToImage
-			set endFolderX to quoted form of POSIX path of endFolder
-			
-			do shell script "mv " & pathToImageX & " " & endFolderX
-			
-		end if
-	end repeat
+			if contents of j = detourTag then
+				set endFolder to ((destFolder as string) & j) as alias
+				--	display dialog ("WIN" & "     " & POSIXpathToImage & "     " & endFolder)
+				-- do shell script "mv " & POSIXpathToImage & " " & endFolder
+				-- tell application "Finder" to move pathToImage to endFolder
+				
+				set pathToImageX to quoted form of POSIX path of pathToImage
+				set endFolderX to quoted form of POSIX path of endFolder
+				
+				do shell script "mv " & pathToImageX & " " & endFolderX
+				--else
+				--set pathToImageX to quoted form of POSIX path of pathToImage
+				--do shell script "mv " & pathToImageX & " " & errorFolderX
+				
+			end if
+		end repeat
+	on error
+		set pathToImageX to quoted form of POSIX path of pathToImage
+		do shell script "mv " & pathToImageX & " " & errorFolderX
+	end try
 end repeat
 
 (*
@@ -217,8 +228,8 @@ on read_tags(pathToImage)
 	
 	set POSIXpathToImage to POSIX path of pathToImage
 	
-	set tagsList to do shell script "/usr/local/bin/exiftool -subject " & "'" & POSIXpathToImage & "'"
-	set cleanTags to replace_chars(tagsList, "Subject                         : ", "")
+	set tagsList to do shell script "/usr/local/bin/exiftool -keywords " & "'" & POSIXpathToImage & "'"
+	set cleanTags to replace_chars(tagsList, "Keywords                        : ", "")
 	set cleanTagsList to split(cleanTags, ", ")
 	
 	set detourTag to item 7 of cleanTagsList

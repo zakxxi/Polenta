@@ -1,12 +1,12 @@
 (****************************
-polentaTagger v1.0
+polentaTagger v1.1-WIP
 by Adrien Revel 2015
 ****************************)
 
 (*
 Set properties
 *)
-property polWindowName : "polentaTagger v1.0"
+property polWindowName : "polentaTagger v1.1"
 property polOkButtonName : "Continuer"
 property polCancelButtonName : "Annuler"
 
@@ -162,7 +162,7 @@ Tag the file
 *)
 	set polPathToXMP to polCaptureDirectory & polImageNewName & ".xmp"
 	set polTagList to polSessionTag & "," & polDateTag & "," & polBuyerTag & "," & polPhotographerTag & "," & polBarcodeTag & "," & polViewTag & "," & polClippingTag & "," & polKitTag & "," & polRetouchTag -- generate the taglist comma separated
-	do shell script "/usr/local/bin/exiftool -overwrite_original -subject=" & quoted form of polTagList & " " & quoted form of polPathToXMP -- need to check exiftool location
+	do shell script "/usr/local/bin/exiftool -overwrite_original -keywords=" & quoted form of polTagList & " " & quoted form of polPathToXMP -- need to check exiftool location
 	
 	
 	(*

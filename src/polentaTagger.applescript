@@ -1,5 +1,5 @@
 (****************************
-polentaTagger v1.1-WIP
+polentaTagger v1.1
 by Adrien Revel 2015
 ****************************)
 
@@ -21,7 +21,6 @@ Set defaults folders
 	(*
 Read preferences files
 *)
-	--set polSessionPrefs to read polPrefsDirectory & "polSession.txt" as string
 	set polPhotographerPrefs to read polPrefsDirectory & "polPhotographer.txt" as string
 	set polBuyersPrefs to read polPrefsDirectory & "polBuyers.txt" using delimiter linefeed -- create a list, after linebreak
 	set polViewsPrefs to read polPrefsDirectory & "polViews.txt" using delimiter linefeed -- create a list, after linebreak
@@ -100,19 +99,16 @@ Set the session and date tag
 	(*
 Set optional tags
 *)
-	--set polRetouch to text returned of (display dialog "Annotation retouche " default answer "" buttons {polCancelButtonName, polOkButtonName} default button 2 cancel button 1 with title polWindowName with icon note)
 	
 	(*
 Enter note and check-it
 *)
-	--set authorizedRetouchCharacters to {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", " ", "_"}
 	set authorizedRetouchCharacters to {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "é", "è", "à", " ", "_"}
 	
 	set polRetouch to ""
 	set polBadRetouch to false
 	
 	repeat while (polRetouch is equal to "") or (polBadRetouch is true)
-		--set polRetouch to text returned of (display dialog "Scan du codebarre" default answer "" buttons {polCancelButtonName, polOkButtonName} default button 2 cancel button 1 with title polWindowName with icon note)
 		set polRetouch to text returned of (display dialog "Annotation retouche" default answer "" buttons {polCancelButtonName, polOkButtonName} default button 2 cancel button 1 with title polWindowName with icon note)
 		
 		set testedCharacters to characters of polRetouch as text -- test for bads characters

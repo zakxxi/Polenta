@@ -51,7 +51,7 @@ set findPath to (choose from list {"*/Output/*", "*"} with prompt "Choose the fi
 -- find '/Volumes/Data HD/_BRICE BIG STUFF/' -name '*.jpg' -path '*/Output/*' -exec cp {} '/Users/zak/Desktop/OUT/' \;
 set cmd_findJPGcopy to "find " & baseFolderXX & " -name '*.jpg' -path '" & findPath & "' -exec cp {} " & batchFolderXX & " \\;"
 
-set nb_jpg_original to do shell script ("find " & baseFolderXX & " -name '*.jpg' -path '" & findPath & "' | wc -l") -- count number of image to process
+-- set nb_jpg_original to do shell script ("find " & baseFolderXX & " -name '*.jpg' -path '" & findPath & "' | wc -l") -- count number of image to process
 
 do shell script cmd_createWorkFolders
 do shell script cmd_findJPGcopy

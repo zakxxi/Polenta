@@ -1,5 +1,5 @@
 (****************************
-polentaSession v1.1-WIP
+polentaSession v1.1
 by Adrien Revel 2015
 ****************************)
 

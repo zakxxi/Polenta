@@ -1,5 +1,5 @@
 (****************************
-polentaFilterDetour v1.1-WIP
+polentaFilterDetour v1.1
 by Adrien Revel 2015
 ****************************)
 
@@ -13,10 +13,6 @@ set polPrefsDirectory to polDirectory & "prefs/" -- folder of preferences
 -- Choose work folders
 set baseFolder to choose folder with prompt "Select base folder" default location (path to desktop folder) as alias
 set destFolder to choose folder with prompt "Select dest folder" default location (path to desktop folder) as alias
-
--- Debug work folders
---set baseFolder to "Data HD:_BRICE BIG STUFF:"
---set destFolder to "Mac HD:Users:zak:Desktop:OUT:"
 
 -- Convert to POSIX and quoted POSIX path
 set polPrefsDirectoryX to POSIX path of polPrefsDirectory
@@ -39,47 +35,15 @@ set outputFolderX to destFolderX & "_OUTPUT/"
 set outputFolderXX to quoted form of outputFolderX
 
 -- Create work folder
--- mkdir '/Users/zak/Desktop/OUT/_BATCH' '/Users/zak/Desktop/OUT/_NOTAG' '/Users/zak/Desktop/OUT/_OUTPUT'
 set cmd_createWorkFolders to "mkdir " & batchFolderXX & " " & outputFolderXX & " " & errorFolderXX
 
 -- Define the path to look
---set findPath to "*/Output/*"
-
 set findPath to (choose from list {"*/Output/*", "*"} with prompt "Choose the find pattern" default items {"*/Output/*"}) as string
 
--- Run shell script to find all jpg in baseFolder and copy to destFolder
--- find '/Volumes/Data HD/_BRICE BIG STUFF/' -name '*.jpg' -path '*/Output/*' -exec cp {} '/Users/zak/Desktop/OUT/' \;
 set cmd_findJPGcopy to "find " & baseFolderXX & " -name '*.jpg' -path '" & findPath & "' -exec cp {} " & batchFolderXX & " \\;"
-
--- set nb_jpg_original to do shell script ("find " & baseFolderXX & " -name '*.jpg' -path '" & findPath & "' | wc -l") -- count number of image to process
 
 do shell script cmd_createWorkFolders
 do shell script cmd_findJPGcopy
-
--- Check for images without tags
--- mdfind -onlyin . 'kMDItemKeywords != "*"'
--- delay 10
-
--- set cmd_isolateNoTag to "mdfind -onlyin " & batchFolderXX & " 'kMDItemKeywords != \"*\"' | while read f; do mv \"$f\" " & notagFolderXX & "; done "
-
--- do shell script cmd_isolateNoTag
-
-set nb_jpg_batch to do shell script ("find " & batchFolderXX & " -name '*.jpg' -path '" & findPath & "' | wc -l")
---set nb_jpg_notag to do shell script ("find " & notagFolderXX & " -name '*.jpg' -path '" & findPath & "' | wc -l")
-
-
-
-(*
-DETOUR FOLDERS
-*)
--- path to polClippingTypes.txt
---set polClippingTypes to quoted form of (polPrefsDirectoryX & "polClippingTypes.txt")
-
--- create detour folders
---set cmd_createClippingFolders to "cd " & outputFolderX & " && while read -r f; do mkdir -p DE_\"$f\";done < " & polClippingTypes
-
---do shell script cmd_createClippingFolders
-
 
 (*
 ++++++++++
@@ -93,7 +57,6 @@ set destFolder to POSIX file (get outputFolderX) as alias
 (*
 Read preferences files
 *)
---set polBuyersPrefs to read polPrefsDirectory & "polBuyers.txt" using delimiter linefeed -- create a list, after linebreak
 set polClippingTypesPrefs to read polPrefsDirectory & "polClippingTypes.txt" using delimiter linefeed -- create a list, after linebreak
 
 
@@ -116,8 +79,6 @@ repeat with i in fileList
 	-- display dialog (i as text)
 	
 	set pathToImage to i as alias
-	--display dialog pathToImage
-	--set pathToImageX to quoted form of POSIX path of pathToImage
 	
 	try
 		
@@ -127,17 +88,10 @@ repeat with i in fileList
 			
 			if contents of j = detourTag then
 				set endFolder to ((destFolder as string) & j) as alias
-				--	display dialog ("WIN" & "     " & POSIXpathToImage & "     " & endFolder)
-				-- do shell script "mv " & POSIXpathToImage & " " & endFolder
-				-- tell application "Finder" to move pathToImage to endFolder
-				
 				set pathToImageX to quoted form of POSIX path of pathToImage
 				set endFolderX to quoted form of POSIX path of endFolder
 				
 				do shell script "mv " & pathToImageX & " " & endFolderX
-				--else
-				--set pathToImageX to quoted form of POSIX path of pathToImage
-				--do shell script "mv " & pathToImageX & " " & errorFolderX
 				
 			end if
 		end repeat
@@ -214,12 +168,6 @@ Display message
 *)
 display dialog "+++ YOU WIN! +++ PERFECT! +++" buttons {"OK!"} default button 1 with title "polentaFilter" with icon caution
 
-
-
-(*
-Empty the trash
-*)
-
 (*
 Utilities functions
 *)
@@ -233,8 +181,6 @@ on read_tags(pathToImage)
 	set cleanTagsList to split(cleanTags, ", ")
 	
 	set detourTag to item 7 of cleanTagsList
-	--set buyerTag to item 3 of cleanTagsList
-	--display dialog buyerTag & "  " & detourTag buttons {"NEXT"} default button 1 with icon note
 	
 	return detourTag
 	

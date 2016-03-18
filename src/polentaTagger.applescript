@@ -1,12 +1,12 @@
 (****************************
-polentaTagger v1.0
+polentaTagger v1.1
 by Adrien Revel 2015
 ****************************)
 
 (*
 Set properties
 *)
-property polWindowName : "polentaTagger v1.0"
+property polWindowName : "polentaTagger v1.1"
 property polOkButtonName : "Continuer"
 property polCancelButtonName : "Annuler"
 
@@ -21,7 +21,6 @@ Set defaults folders
 	(*
 Read preferences files
 *)
-	--set polSessionPrefs to read polPrefsDirectory & "polSession.txt" as string
 	set polPhotographerPrefs to read polPrefsDirectory & "polPhotographer.txt" as string
 	set polBuyersPrefs to read polPrefsDirectory & "polBuyers.txt" using delimiter linefeed -- create a list, after linebreak
 	set polViewsPrefs to read polPrefsDirectory & "polViews.txt" using delimiter linefeed -- create a list, after linebreak
@@ -62,6 +61,7 @@ Enter barcode and check-it
 			set theTestedCharacter to character i of testedCharacters
 			if theTestedCharacter is not in authorizedCharacters then
 				set polBadBarcode to true
+				exit repeat
 			else
 				set polBadBarcode to false
 			end if
@@ -99,7 +99,39 @@ Set the session and date tag
 	(*
 Set optional tags
 *)
-	set polRetouch to text returned of (display dialog "Annotation retouche " default answer "" buttons {polCancelButtonName, polOkButtonName} default button 2 cancel button 1 with title polWindowName with icon note)
+	
+	(*
+Enter note and check-it
+*)
+	set authorizedRetouchCharacters to {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "é", "è", "à", " ", "_"}
+	
+	set polRetouch to ""
+	set polBadRetouch to false
+	
+	repeat while (polRetouch is equal to "") or (polBadRetouch is true)
+		set polRetouch to text returned of (display dialog "Annotation retouche" default answer "" buttons {polCancelButtonName, polOkButtonName} default button 2 cancel button 1 with title polWindowName with icon note)
+		
+		set testedCharacters to characters of polRetouch as text -- test for bads characters
+		
+		repeat with i from 1 to (length of testedCharacters)
+			set theTestedCharacter to character i of testedCharacters
+			if theTestedCharacter is not in authorizedRetouchCharacters then
+				set polBadRetouch to true
+				exit repeat
+			else
+				set polBadRetouch to false
+			end if
+		end repeat
+		
+		if polBadRetouch is false then
+			set polRetouch to (do shell script "echo \"" & polRetouch & "\" | sed 's/ /_/g'") -- replace space with underscore
+			
+		else
+			display dialog "Annotation non valide
+		Caractères Autorisés : A-Z a-z é è à _" buttons {"Re-saisir"} default button 1 with title "Alerte" with icon caution
+		end if
+	end repeat
+	
 	set polKit to (choose from list {"KIT-1", "KIT-2", "KIT-3", "KIT-4", "KIT-5", "KIT-6", "KIT-7", "KIT-8"} with title polWindowName with prompt "Fait partie d'un KIT" OK button name polOkButtonName cancel button name polCancelButtonName with empty selection allowed)
 	
 	(*
